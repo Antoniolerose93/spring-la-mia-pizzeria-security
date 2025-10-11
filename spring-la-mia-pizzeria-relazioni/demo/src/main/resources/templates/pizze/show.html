@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <title th:unless="${empty}" th:text ="${pizza.nome}"></title>
+    <title th:if="${empty}">Pizza non trovata</title>
+    
+
+</head>
+
+
+<body>
+    <nav th:replace="~{navbar :: navbar('Pizze')}"></nav> 
+    <!-- th:replace="~{nomeFile :: nomeFrammento(parametri)}" il file del frammetno è navbar.html, quindi navbar, il frammento si chiama navbar quindi :: navbar, il parametro è current quindi Pizze-->
+        <div class="container" th:object="${pizza}" th:unless="${empty}">
+            <h1 th:text="*{nome}"></h1>
+            <h2 th:text="|Ingredients *{descrizione}|"></h2> 
+            <!-- | serve per concatenare -->
+            <hr/>
+            <div class="row">
+                <div class ="col-8">
+                    <dl>
+                        <dt>Descrizione</dt>
+                        <dd th:text="*{descrizione}"></dd>
+                        <dt>Nome</dt>
+                        <dd th:text="*{nome}"></dd>
+                        <dt>Foto</dt>
+						<dd>
+                            <img th:src="${pizza.foto}" class="img-fluid" alt="Responsive image">
+						</dd>              
+                    </dl>
+                </div>
+            
+            
+                <div class="col-4">
+                    <h3>Ingredienti</h3>
+                        <ul>
+                        <li th:each="ing : *{ingredients}" th:text="${ing.ingredient}"></li>
+                        </ul>
+                    <h3>Prezzo</h5>    
+                        <div th:text="*{prezzo} + '€'"></div>
+                </div>
+            
+        </div>
+           
+                <div class="col-8">
+                    <h3>Offers</h3>
+                    <a class ="btn btn-outline-primary" th:href="@{/pizze/{id}/offer(id=${pizza.id})}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-plus" viewBox="0 0 16 16">
+                        <path
+                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg>
+                    Nuova Offerta
+                    </a>
+                    <table class ="table table-striped" th:if="${pizza.offers.size()>0}"> <!-- verifichiamo se una pizza ha almeno un'offerta associata-->
+                        <thead>
+                            <tr>
+                                <td>Data di inizio dell'offerta</td>
+                                <td>Data di fine dell'offerta</td>
+                                <td> Note </td>
+                                <td></td> <!-- colonna per la modifica-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="offer : ${pizza.offers}">
+                                <td th:text = "${offer.offerStartDate}"></td>
+                                <td th:text = "${offer.offerEndDate}"></td>
+                                <td th:text = "${offer.note}"></td>
+                                <td>
+                                    <a class="btn btn-outline-primary" th:href="@{|/offers/edit/${offer.id}|}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path
+                                            d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:unless="${pizza.offers.size() > 0}">
+                        <div class ="alert alert-primary">
+                            Non ci sono offerte per questa pizza
+                        </div>
+                    </div>    
+                </div>
+           
+        <div class = "container" th:if="${empty}">
+            <h1>Pizza non trovata</h1>
+        </div>    
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

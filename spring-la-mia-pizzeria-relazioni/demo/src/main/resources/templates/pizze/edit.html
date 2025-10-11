@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <title th:text="|Edit${pizza.nome}|">Edit Pizze</title>
+</head>
+
+<body>
+    <nav th:replace="~{navbar :: navbar('Pizze')}"></nav> 
+        <!-- th:replace="~{nomeFile :: nomeFrammento(parametri)}" il file del frammento è navbar.html, quindi navbar, il frammento si chiama navbar quindi :: navbar, il parametro è current quindi Pizze-->    
+    <div class="container">
+        <div class="content">    
+        
+            <h1 class="text-center py-3">Pizze</h1>
+            <hr/>
+
+           
+            <form id="pizza-form" th:object="${pizza}" th:action="@{/pizze/edit/{id}(id=${pizza.id})}" method="post"> <!-- @{/pizze/edit/{id}(id=${pizza.id})} thymleaf deve attivarsi per sostituire il placeholder -->
+                <ul th:if="${#fields.hasErrors('*')}">
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+                </ul>
+                    
+                <div class="row">
+                    <!-- dati pizza -->
+                    <div class ="col-8">
+                        <div class ="row gy-2">
+                            <div class="col-12">
+                                <!-- <label class="form-label" for="nome">ID</label> -->
+                                <input id ="id" name="id" type="hidden" th:field="*{id}">
+                                <!-- <div th:if="${#fields.hasErrors('nome')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('nome')}" th:text="${err}"></li>
+                                    </ul> -->
+                                
+                                <label class="form-label" for="nome">Nome</label>
+                                <input id ="nome" type="text" class="form-control" th:field="*{nome}" th:errorClass ="is-invalid">
+                                <div th:if="${#fields.hasErrors('nome')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('nome')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="descrizione">Descrizione</label>
+                                <input id ="descrizione" type="text" class="form-control" th:field="*{descrizione}" th:errorClass ="is-invalid">
+                                 <div th:if="${#fields.hasErrors('descrizione')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('descrizione')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="foto">Foto (url)</label>
+                                <input id ="foto" type="text" class="form-control" th:field="*{foto}" th:errorClass ="is-invalid">
+                                 <div th:if="${#fields.hasErrors('foto')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('foto')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Ingredienti</label>
+                                <div th:each="ing : ${allIngredients}">
+                                <input type="checkbox" th:value ="${ing.id}" th:field="*{ingredients}" th:errorClass ="is-invalid">
+                                <span th:text="${ing.ingredient}"></span>
+                                </div> 
+                                <div th:if="${#fields.hasErrors('ingredients')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('ingredients')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="prezzo">Prezzo</label>
+                                <input id ="prezzo" type="number" class="form-control" th:field="*{prezzo}" th:errorClass ="is-invalid">
+                                <div th:if="${#fields.hasErrors('prezzo')}" class ="invalid-feedback" >
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('Prezzo')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                    </svg>
+                                    Salva</button>
+                                <a th:href="@{/pizze/}" class="btn btn-danger"> Cancella </a>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+ <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

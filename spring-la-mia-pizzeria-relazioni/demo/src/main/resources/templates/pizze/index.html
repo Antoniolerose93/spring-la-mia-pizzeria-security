@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <title>Pizze</title>
+</head>
+
+<body>
+    <nav th:replace="~{navbar :: navbar('Pizze')}"></nav> 
+        <!-- th:replace="~{nomeFile :: nomeFrammento(parametri)}" il file del frammetno è navbar.html, quindi navbar, il frammento si chiama navbar quindi :: navbar, il parametro è current quindi Pizze-->    
+    <div class="container">
+        <div class="content">    
+        <th:block th:if ="${successMessage !=null}">
+            <div class ="alert alert-warning alter-dismissable fade show" role ="alert">
+                <span th:text="${successMessage}"></span>
+                <button type ="button" class ="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </th:block>
+        <h1 class="text-center py-3">Pizze</h1>
+        <hr/>
+        <div class="mb-3 d-flex justify-content-between">
+            <a class="btn btn-primary" th:href="@{/pizze/create}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-plus-fill" viewBox="0 0 16 16">
+                <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zM8.5 6v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0"/>
+                </svg>
+                Aggiungi pizza</a>
+            
+            <!-- creiamo un form di ricerca tramite keyword dove l'utente inserirà una keyword e troverà la pizza richiesta -->
+            <form method="get" th:action="@{/pizze}">
+            <!-- permetto all'utente di cercare un elemento tramite la keyword -->
+                <div class="input-group">
+                    <input name="keyword" type="search" class ="form-control" placeholder="Search" aria-label="Search"> 
+                        <button class="btn btn-primary" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <table class="table table-striped" th:if="${list.size()>0 }">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Descrizione</th>
+                    <th scope ="col">Ingredienti</th>
+                    <th scope="col">Prezzo</th>
+                     <th></th> <!-- header per il dettaglio -->
+                     <th></th> <!-- header per la modifica -->
+                     <th></th> <!-- header per la cancellazione-->
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${list}">
+                    <td th:text="${item.nome}"></td>
+                    <td th:text="${item.descrizione}"></td>
+                    <td>
+                        <span th:each="ing, iterStat : ${item.ingredients}"> <!-- per rimuovere la , alla fine degli ingredienti.
+                            prende gli ingredienti, verifica che non sia l'ultimo ingrediente inserito, e aggiunge una virgola e l'ingrediente succcessivo, 
+                            quando arriva all'ultimo ingrediente non aggiunge più la virgola-->
+                            <span th:text="${ing.ingredient}"></span><span th:if="${!iterStat.last}">, </span>
+                        </span>
+                    </td>
+                    <td th:text="${item.prezzo} + '€'"></td>
+                    
+                    <td>  <!-- colonna per il dettaglio -->
+                        <a th:href="@{|/pizze/show/${item.id}|}" class="btn btn-primary" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fork-knife" viewBox="0 0 16 16">
+                                <path d="M13 .5c0-.276-.226-.506-.498-.465-1.703.257-2.94 2.012-3 8.462a.5.5 0 0 0 .498.5c.56.01 1 .13 1 1.003v5.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5zM4.25 0a.25.25 0 0 1 .25.25v5.122a.128.128 0 0 0 .256.006l.233-5.14A.25.25 0 0 1 5.24 0h.522a.25.25 0 0 1 .25.238l.233 5.14a.128.128 0 0 0 .256-.006V.25A.25.25 0 0 1 6.75 0h.29a.5.5 0 0 1 .498.458l.423 5.07a1.69 1.69 0 0 1-1.059 1.711l-.053.022a.92.92 0 0 0-.58.884L6.47 15a.971.971 0 1 1-1.942 0l.202-6.855a.92.92 0 0 0-.58-.884l-.053-.022a1.69 1.69 0 0 1-1.059-1.712L3.462.458A.5.5 0 0 1 3.96 0z"/>
+                            </svg>
+                        </a>
+                    </td>
+
+                    <td>  <!-- colonna per la modifica -->
+                        <a th:href="@{|/pizze/edit/${item.id}|}" class="btn btn-primary" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                            </svg>
+                        </a>
+                    </td>
+
+                    <td>  <!-- colonna per la cancellazione -->
+                        <form th:action="@{/pizze/delete/{id}(id=${item.id})}" method="post" >
+                            <button class ="btn btn-danger" type = "submit" id ="submitButton"
+                            onclick ="return confirm('Sei sicuro?')">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+
+            <div class="alert alert-primary" role="alert" th:unless="${list.size()>0}"> 
+                 There is no pizze in database
+            </div>
+        </div>
+    </div>
+    <!-- completato nuova repo -->
+    <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>
