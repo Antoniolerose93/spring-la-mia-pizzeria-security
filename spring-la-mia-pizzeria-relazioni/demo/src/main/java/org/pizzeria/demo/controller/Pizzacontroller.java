@@ -9,6 +9,7 @@ import org.pizzeria.demo.repository.IngredientRepository;
 import org.pizzeria.demo.repository.OfferRepository;
 import org.pizzeria.demo.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,7 +41,7 @@ public class Pizzacontroller {
 
 
 @GetMapping("/") //Questa annotazione risponde a richieste HTTP Get all'URL associato al controller
-    public String index (Model model, @RequestParam(name="keyword", required=false)String keyword) { 
+    public String index (Authentication auth, Model model, @RequestParam(name="keyword", required=false)String keyword) { 
 //index è il nome della pagina che deve essere renderizzata. 
 //Model model è un contenitore che serve a passare dati dal controller alla pagina.
 // List<Pizza> result = null;repository.findAll(); 
@@ -57,6 +58,7 @@ public class Pizzacontroller {
         } 
         
         model.addAttribute("list", result);
+        model.addAttribute("username", auth.getName());
         return "pizze/index";       
 }
 
