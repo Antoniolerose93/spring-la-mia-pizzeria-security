@@ -21,8 +21,8 @@ public class DatabaseUserDetailsService implements UserDetailsService {
     //ossia con repository da db ricercandolo per username
         Optional<User> userOpt = userRepo.findByUsername(username); //Verifichiamo la presenza di o l'assenza di un valore
         //evitando la NullPointerException
-        if(userOpt.isPresent()) {
-            return new DatabaseUserDetails(userOpt.get());
+        if(userOpt.isPresent()) { // se presente l'oggetto ritorna UserDetails
+            return new DatabaseUserDetails(userOpt.get()); //ritorna l'oggetto completo
         } else {
             throw new UsernameNotFoundException("Username not found");
         }

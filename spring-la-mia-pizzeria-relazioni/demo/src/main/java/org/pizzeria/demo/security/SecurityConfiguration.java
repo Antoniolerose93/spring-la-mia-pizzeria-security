@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/ingredients", "/ingredients/**").hasAuthority("ADMIN")
                 .requestMatchers("/pizze", "/pizze/**").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/**").permitAll() //indica che tutto il resto, ossia tutto ciò che non ha .hasAutorithy, deve essere permesso a tutto
-                .and().formLogin()
+                .and().formLogin() 
                 .and().logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/logout-success")
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Bean
+    @Bean //Rende un metodo come se fosse una classe
     DatabaseUserDetailsService userDetailsService() { //per autenticare un utente devo prendere questa classe che recupera l'utente da db
         return new DatabaseUserDetailsService();
     }
@@ -53,11 +53,13 @@ public class SecurityConfiguration {
         //Quando l'utente inserisce la password, l'algoritmo deve aggiungere_sale per richiamare la password nel db.
 
     @Bean
-    DaoAuthenticationProvider authenticationProvider() { //definiamo come vogliamo gestire le password
+    DaoAuthenticationProvider authenticationProvider() { //è un provider che imposta
+        //il meccanismo di recupero dell'utente e il meccanismo di recupero della password
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService()); //gestiamo tutto ciò che ha a che fare con l'utente
+        authProvider.setUserDetailsService(userDetailsService()); //gestiamo tutto ciò che ha a che fare con l'utente. 
         authProvider.setPasswordEncoder(passwordEncoder()); //gestiamo la password
+        //con questo proveder definiamo che il form deve passare da questo servizio per valutare l'utente e la password.
 
         return authProvider;
     }

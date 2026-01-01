@@ -10,8 +10,12 @@
 
 package org.pizzeria.demo.controller;
 
+import java.util.Optional;
+
 import org.pizzeria.demo.model.Offer;
+import org.pizzeria.demo.model.Pizza;
 import org.pizzeria.demo.repository.OfferRepository;
+import org.pizzeria.demo.repository.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,12 +35,41 @@ public class Offercontroller {
     @Autowired
     private OfferRepository repository;
 
-    @PostMapping ("/create")
-    public String create(@Valid @ModelAttribute("offer") Offer offer, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return "offers/edit";
+    @Autowired
+    private PizzaRepository pizzaRepository;
+
+    @GetMapping("/create/{pizzaId}")
+    public String newOffer(@PathVariable("pizzaId") Integer pizzaId, Model model){
+        Optional <Pizza> optPizza = pizzaRepository.findById(pizzaId);
+        if (optPizza.isEmpty()){
+            //Se la pizza non esiste, torno alla lista delle pizze
+            return "redirect:/pizze";
         }
         
+        Offer offer = new Offer();
+        offer.setPizza(optPizza.get()); //Associo la pizza all'offerta
+        
+        model.addAttribute("offer", offer);
+        model.addAttribute("editMode", false); //modalità "creazione"
+        return "offers/edit";
+
+    }
+
+    @PostMapping ("/create")
+    public String create(@Valid @ModelAttribute("offer") 
+    Offer offer, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("editMode", false);
+            return "offers/edit";
+        }
+
+        Optional<Pizza> optPizza = pizzaRepository.findById(offer.getPizza().getId());
+        if(optPizza.isEmpty()){
+            return "redirect:/pizze";
+        }
+        
+        offer.setPizza(optPizza.get());
+
         repository.save(offer);
 
         return "redirect:/pizze/show/" + offer.getPizza().getId();
@@ -44,7 +77,14 @@ public class Offercontroller {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id")Integer id, Model model){
-        Offer offer = repository.findById(id).get();
+        
+        Optional<Offer> optOffer = repository.findById(id);
+
+        if (optOffer.isEmpty()){
+            return "redirect:/offers";
+        }
+                
+        Offer offer = optOffer.get();
         model.addAttribute("editMode", true);
         model.addAttribute("offer", offer);
         return "/offers/edit";

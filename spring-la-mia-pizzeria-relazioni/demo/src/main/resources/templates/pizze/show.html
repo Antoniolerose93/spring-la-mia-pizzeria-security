@@ -18,7 +18,7 @@
     <!-- th:replace="~{nomeFile :: nomeFrammento(parametri)}" il file del frammetno è navbar.html, quindi navbar, il frammento si chiama navbar quindi :: navbar, il parametro è current quindi Pizze-->
         <div class="container" th:object="${pizza}" th:unless="${empty}">
             <h1 th:text="*{nome}"></h1>
-            <h2 th:text="|Ingredients *{descrizione}|"></h2> 
+            <h2 th:text="*{descrizione}"></h2> 
             <!-- | serve per concatenare -->
             <hr/>
             <div class="row">
@@ -48,8 +48,8 @@
         </div>
            
                 <div class="col-8">
-                    <h3>Offers</h3>
-                    <a class ="btn btn-outline-primary" th:href="@{/pizze/{id}/offer(id=${pizza.id})}">
+                    <h3>Offerte</h3>
+                    <a class ="btn btn-outline-primary" th:href="@{|/offers/create/${pizza.id}|}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-plus" viewBox="0 0 16 16">
                         <path
@@ -72,7 +72,7 @@
                                 <td th:text = "${offer.offerEndDate}"></td>
                                 <td th:text = "${offer.note}"></td>
                                 <td>
-                                    <a class="btn btn-outline-primary" th:href="@{|/offers/edit/${offer.id}|}">
+                                    <a class="btn btn-outline-primary" th:href="@{|/offers/create/${pizza.id}|}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-pencil" viewBox="0 0 16 16">
                                         <path

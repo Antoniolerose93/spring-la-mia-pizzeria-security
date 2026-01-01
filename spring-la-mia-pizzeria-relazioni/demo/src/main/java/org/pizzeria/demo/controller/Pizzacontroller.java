@@ -40,16 +40,16 @@ public class Pizzacontroller {
     private IngredientRepository ingredientRepository;
 
 
-@GetMapping("/") //Questa annotazione risponde a richieste HTTP Get all'URL associato al controller
-    public String index (Authentication auth, Model model, @RequestParam(name="keyword", required=false)String keyword) { 
-//index è il nome della pagina che deve essere renderizzata. 
-//Model model è un contenitore che serve a passare dati dal controller alla pagina.
-// List<Pizza> result = null;repository.findAll(); 
-// model.addAttribute("list", result);
-// return "/pizze/index";
-//Sopra uso PizzaRepository per recuperare tutte le pizze dal database, findAll è un metodo ereditato da JpaRepository
-        
-//Qui uso invece un filtro per dire che se non mi viene passata una keyword voglio devono tornarmi tutti.
+    @GetMapping("/") //Questa annotazione risponde a richieste HTTP Get all'URL associato al controller
+        public String index (Authentication auth, Model model, @RequestParam(name="keyword", required=false)String keyword) { 
+    //index è il nome della pagina che deve essere renderizzata. 
+    //Model model è un contenitore che serve a passare dati dal controller alla pagina.
+    // List<Pizza> result = null;repository.findAll(); 
+    // model.addAttribute("list", result);
+    // return "/pizze/index";
+    //Sopra uso PizzaRepository per recuperare tutte le pizze dal database, findAll è un metodo ereditato da JpaRepository
+            
+    //Qui uso invece un filtro per dire che se non mi viene passata una keyword voglio devono tornarmi tutti.
         List<Pizza> result = null;
         if (keyword == null || keyword.isBlank()){//isBlank verifica se la stringa della keyword è vuota o contiene solo spazi
             result = repository.findAll();
@@ -63,7 +63,7 @@ public class Pizzacontroller {
 }
 
 
-@GetMapping ("/show/{id}") 
+    @GetMapping ("/show/{id}") 
 //Pathvariable consente di rimanere nell'url aggiungendo un ID
 //Come scegliere se usare il PathVariable o il query param? il query param consente di inserire nell'url un ? seguito dal parametro
 //La differenza è di concetto. Se il filtro identifica solo una risorsa occorre il path, se invece il filtro restituisce più risorse è meglio usare il query param
@@ -83,15 +83,15 @@ public class Pizzacontroller {
 
 }
 
-@GetMapping("/create")
+    @GetMapping("/create")
     public String create (Model model) {
         model.addAttribute("pizza", new Pizza());
         model.addAttribute("allIngredients", ingredientRepository.findAll());
         return "/pizze/create";
 }
 
-@PostMapping("/create")
-    public String save(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model , RedirectAttributes redirectAttributes) {
+    @PostMapping("/create")
+    public String save(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         Optional<Pizza> optPizza = repository.findByNome(formPizza.getNome());
         if(optPizza.isPresent()) {
             //qui vuol dire che ha trovato una pizza con stesso nome su db
@@ -108,17 +108,17 @@ public class Pizzacontroller {
         return "redirect:/pizze";
     }
 
-@GetMapping("/edit/{id}")
-    public String edit(@PathVariable ("id") Integer id, Model model) {
+    @GetMapping("/edit/{id}")
+        public String edit(@PathVariable ("id") Integer id, Model model) {
         Optional <Pizza> optPizza = repository.findById(id);
         Pizza pizza = optPizza.get();
         model.addAttribute("pizza", pizza);
         model.addAttribute("allIngredients", ingredientRepository.findAll());
-    return "/pizze/edit";
+        return "/pizze/edit";
 }
 
-@PostMapping("/edit/{id}")
-    public String update(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult,Model model) {    
+    @PostMapping("/edit/{id}")
+        public String update(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model) {    
         Pizza oldPizza = repository.findById(formPizza.getId()).get();
         // //inseriamo un blocco, non si può modificare il nome e la descrizione delle pizze
         // if(!oldPizza.getNome().equals(formPizza.getNome())) { //verifichiamo se la vecchia pizza si chiama come la nuova. ! è il not che si mette all'inizio
@@ -142,8 +142,8 @@ public class Pizzacontroller {
 
     }
 
-@PostMapping("/delete/{id}")
-    public String delete (@PathVariable("id") Integer id) {
+    @PostMapping("/delete/{id}")
+        public String delete (@PathVariable("id") Integer id) {
         Pizza pizza = repository.findById(id).get();
         for (Offer offerToDelete : pizza.getOffers()) {
             offerRepository.delete(offerToDelete);
@@ -153,13 +153,13 @@ public class Pizzacontroller {
         return "redirect:/pizze";
     }
 
-@GetMapping("/{id}/offer")
-    public String offer(@PathVariable("id") Integer id, Model model) {
+    @GetMapping("/{id}/offer")
+        public String offer(@PathVariable("id") Integer id, Model model) {
         Offer offer = new Offer();
         offer.setPizza(repository.findById(id).get());
 
         model.addAttribute("offer", offer);
-        //Creazione nuovo prestito
+        //Creazione nuova offerta
         model.addAttribute("editMode", false);
         return "/offers/edit";
     }

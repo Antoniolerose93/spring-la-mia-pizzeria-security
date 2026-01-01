@@ -26,8 +26,8 @@
                 </ul>
             </div>
             <div>
-                Logged User : <span sec:authentication ="name"></span>
-                Roles: <span sec:authentication="principal.authorities"></span>
+                Logged User : <strong><span sec:authentication ="name"></span></strong>
+                Roles: <strong><span sec:authentication="principal.authorities"></span></strong>
                 <a class="btn btn-primary" href = "/logout-success">LOGOUT</a>
             </div>
         </div>
